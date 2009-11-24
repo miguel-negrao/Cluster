@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.11">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #e10000}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #3300d3}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {color: #3300d3}
+span.s3 {color: #737373}
+span.s4 {color: #000000}
+span.s5 {color: #e10000}
+span.s6 {color: #008c00}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>ClusterBasic<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>libray for parallel multicomputer/multiserver usage</b><span class="s1"><b><span class="Apple-tab-span">	</span></b></span></p>
+<p class="p2"><br></p>
+<p class="p1"><b>Inherits from: Object</b></p>
+<p class="p3"><br></p>
+<p class="p1">The Cluster library is useful to use a synth or family of related synths playing symmetrically in multiple servers/computers.</p>
+<p class="p1">Usefull for multicomputer spatialization systems.</p>
+<p class="p2"><br></p>
+<p class="p1">When returning values the classes give out a ClusterArg, which is then recognized by the other classes as a valid argument to expand.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1">The classes implement automatically all methods of Bus, Buffer, Server, Synth, SynthDef, OSCBundle and Group. The arguments supplied can be of two kinds: Either the same arguments one would pass to this classes, or a ClusterArg.</p>
+<p class="p2"><br></p>
+<p class="p1">A ClusterArg should be used when one wants to send different values to each item of the Cluster class. To do so, one must convert an array into a ClusterArg using .asCluster . E.g. [\freq, [200,400].asCluster]</p>
+<p class="p2"><br></p>
+<p class="p1">Other than this everything should work exactly the same as with the original classes.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1">Attention: this classes use SyncCenter for scheduling, since otherwise the synths would not start at the exact same time on both computers/servers.</p>
+<p class="p4"><br></p>
+<p class="p5">// what this example does</p>
+<p class="p6">(</p>
+<p class="p7">SyncCenter.initClass;</p>
+<p class="p6"><span class="s2">SyncCenter</span>.master = <span class="s2">Server</span>(<span class="s3">"master"</span>,<span class="s2">NetAddr</span>(<span class="s3">"127.0.0.1"</span>, 53428)).boot.makeWindow;</p>
+<p class="p6">)</p>
+<p class="p6">(</p>
+<p class="p6">~options = ServerOptions.new.numInputBusChannels_(10);</p>
+<p class="p7"><span class="s4">~server = </span>ClusterServer<span class="s4">([</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s2">Server</span>(<span class="s3">"slave1"</span>,<span class="s2">NetAddr</span>(<span class="s3">"127.0.0.1"</span>, 53177),~options).boot.makeWindow,</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s2">Server</span>(<span class="s3">"slave2"</span>,<span class="s2">NetAddr</span>(<span class="s3">"127.0.0.1"</span>, 53178),~options).boot.makeWindow]);</p>
+<p class="p6">~server.boot;</p>
+<p class="p6">~server.addToSyncCenter;</p>
+<p class="p6"><span class="s2">SyncCenter</span>.inBus = 9;</p>
+<p class="p6"><span class="s2">SyncCenter</span>.outBus = 0;</p>
+<p class="p5">//use jack audio or an adat connection for this.</p>
+<p class="p3"><br></p>
+<p class="p6">)</p>
+<p class="p3"><br></p>
+<p class="p6"><span class="s2">SyncCenter</span>.remoteSync; <span class="s5">//run this</span></p>
+<p class="p6"><span class="s2">SyncCenter</span>.remoteCounts <span class="s5">//check values</span></p>
+<p class="p3"><br></p>
+<p class="p7">SynthDef<span class="s4">(</span><span class="s6">\test</span><span class="s4">,{ </span>|out = 0, freq = 400, amp = 0.2|<span class="s4"> </span>OffsetOut<span class="s4">.ar(out,</span>SinOsc<span class="s4">.ar(freq)*amp) }).sendCluster(~server);</span></p>
+<p class="p3"><br></p>
+<p class="p5">//basic synth stuff</p>
+<p class="p6">(</p>
+<p class="p6">~group = <span class="s2">ClusterGroup</span>(~server);</p>
+<p class="p6">~synth = <span class="s2">ClusterSynth</span>(<span class="s6">\test</span>,target: ~group)</p>
+<p class="p6">)</p>
+<p class="p3"><br></p>
+<p class="p6">~synth.run(<span class="s2">true</span>);</p>
+<p class="p6">~synth.run(<span class="s2">false</span>);</p>
+<p class="p6">~synth.free</p>
+<p class="p3"><br></p>
+<p class="p6">~bus = ClusterBus.audio(~server,1)</p>
+<p class="p3"><br></p>
+<p class="p6">~synth.set(<span class="s6">\freq</span>,3600)</p>
+<p class="p6">~synth.set(<span class="s6">\freq</span>,[300,2200].asCluster,<span class="s6">\amp</span>,[0.05,0.1].asCluster)</p>
+<p class="p6">~synth.set(<span class="s6">\amp</span>,0)</p>
+<p class="p6">~synth.setn(<span class="s6">\freq</span>,[[600,300].asCluster,[0.2,0.1].asCluster])</p>
+<p class="p6">~synth.set(<span class="s6">\out</span>,~bus.index)<span class="Apple-converted-space"> </span></p>
+<p class="p6">~synth.set(<span class="s6">\out</span>,0)<span class="Apple-converted-space"> </span></p>
+<p class="p6">~synth.get(<span class="s6">\freq</span>,{ <span class="s2">|v|</span> v.value.postln })</p>
+<p class="p3"><br></p>
+<p class="p5">//bundling</p>
+<p class="p6">(</p>
+<p class="p6">fork{</p>
+<p class="p7">SynthDef<span class="s4">(</span><span class="s6">\test</span><span class="s4">,{ </span>|out = 0, freq = 400, amp = 0.2|<span class="s4"> </span>OffsetOut<span class="s4">.ar(out,</span>SinOsc<span class="s4">.ar(freq)*amp) }).sendCluster(~server);</span></p>
+<p class="p6">~server.sync;</p>
+<p class="p6">~group = <span class="s2">ClusterGroup</span>.basicNew(~server);</p>
+<p class="p6">~synth = <span class="s2">ClusterSynth</span>.basicNew(<span class="s6">\test</span>,~server);</p>
+<p class="p6">~bundle = <span class="s2">ClusterOSCBundle</span>.new(~server);</p>
+<p class="p6">~bundle.add(~group.newMsg(~server));</p>
+<p class="p6">~bundle.add(~synth.newMsg(~group));</p>
+<p class="p6">~bundle.dopost;</p>
+<p class="p6">SyncCenter.sendPosClusterBundle(1,~bundle,~server);</p>
+<p class="p6">}</p>
+<p class="p6">)</p>
+<p class="p3"><br></p>
+<p class="p5">//sample accurate -&gt; phase cancelation</p>
+<p class="p6">(</p>
+<p class="p6">fork{</p>
+<p class="p6">~synthDef = <span class="s2">ClusterSynthDef</span>([<span class="s6">\test1</span>,<span class="s6">\test2</span>].asCluster,2.collect{ <span class="s2">|i|</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span>{ <span class="s2">|out = 0, bufnum=0, amp = 0.2|</span> <span class="s2">OffsetOut</span>.ar(out,<span class="s2">PlayBuf</span>.ar(1,bufnum)*if(i==0){amp}{amp.neg} )} }.asCluster);</p>
+<p class="p6">~synthDef.send(~server);<span class="Apple-converted-space"> </span></p>
+<p class="p6">~buffer = <span class="s2">ClusterBuffer</span>.read(~server, <span class="s3">"sounds/a11wlk01.wav"</span>);</p>
+<p class="p6">~server.sync;</p>
+<p class="p6">~synth = <span class="s2">ClusterSynth</span>(~synthDef.name,[<span class="s6">\bufnum</span>,~buffer,<span class="s6">\amp</span>,0.2],~server)</p>
+<p class="p6">}</p>
+<p class="p6">)</p>
+<p class="p5">// you should hear absolute silence if synced !!!!</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+</body>
+</html>
