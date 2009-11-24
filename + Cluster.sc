@@ -44,7 +44,7 @@
 }
 
 + Array{
-	//for a single array with n values corresponding to n servers
+	//for a single array with n values corresponding to n objects
 	asCluster{
 		^ClusterArg(this)
 	}

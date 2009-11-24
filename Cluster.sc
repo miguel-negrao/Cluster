@@ -7,10 +7,6 @@
 
 ClusterArg : ClusterBasic{
 
-	*new{Ê|array|
-		^super.newCopyArgs(array)
-	}
-	
 	oclass{ ^ClusterArg }
 	
 	doesNotUnderstand{ arg selector...args; 
