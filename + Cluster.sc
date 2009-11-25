@@ -1,6 +1,6 @@
 
 + Server{
-	asCluster{
+	asClusterServer{
 		^ClusterServer.new([this])
 	}
 }
@@ -45,8 +45,12 @@
 
 + Array{
 	//for a single array with n values corresponding to n objects
-	asCluster{
+	asClusterArg{
 		^ClusterArg(this)
+	}
+	
+	asCluster{
+		^Cluster(this)
 	}
 	
 }

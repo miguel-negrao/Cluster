@@ -22,10 +22,6 @@ ClusterServer : ClusterBasic{
 
 	*oclass{ ^ Server }
 
-	//different from Server
-	*new{ |servers|
-		^super.newCopyArgs(servers)
-	}	
 	
 	asClusterGroup{
 		^ClusterGroup.fromArray(this.prCollect(\asGroup).items)
@@ -136,6 +132,7 @@ ClusterBuffer : ClusterBasic{
 	readChannel { arg argpath, fileStartFrame = 0, numFrames, bufStartFrame = 0, leaveOpen = false, channels, action;
 		this.doesNotUnderstand(\readChannel,argpath, fileStartFrame, numFrames, bufStartFrame, leaveOpen, channels, action)
 	}
+	
 	//implementation of methods that are common to Object and Buffer and thus doesNotUnderstand does not pick up
 	//Buffer.methods.collect(_.name).asSet & Object.methods.collect(_.name).asSet
 	free{
@@ -287,13 +284,7 @@ ClusterSynthDef : ClusterBasic{
 	*oclass{ ^ SynthDef }
 		
 	*new { arg name, ugenGraphFuncs, rates, prependArgs, variants, clusterdata;
-	
-		/*var synthDefs = ugenGraphFuncs.collect{ |ugenGraphFunc,i|
-			SynthDef.new(if(name.size==0){name}{name[i]}, ugenGraphFunc, rates, prependArgs, variants, clusterdata)
-			};
-			
-		^super.newCopyArgs(synthDefs);
-		*/
+
 		^this.doesNotUnderstand(\new,name, ugenGraphFuncs, rates, prependArgs, variants, clusterdata)
 	}
 
@@ -302,8 +293,6 @@ ClusterSynthDef : ClusterBasic{
 }
 
 
-	
-//still Needs fixing	
 ClusterMonitor : ClusterBasic{
 
 	*oclass{ ^ Monitor }
@@ -314,10 +303,10 @@ ClusterMonitor : ClusterBasic{
 	
 	playNToBundle{ |bundle, argOuts, argAmps, argIns, argVol, argFadeTime, inGroup, addAction, defName="system_link_audio_1"|
 				
-		argOuts = argOuts ? items.collect{ |monitor| (0..monitor.ins.size-1) }.asCluster;
-		argAmps = argAmps ? items.collect{ |monitor| monitor.amps }.asCluster;
-		argIns = argIns ? items.collect{ |monitor| monitor.ins }.asCluster;
-		argFadeTime =  argFadeTime ? items.collect{ |monitor| monitor.fadeTime }.asCluster;
+		argOuts = argOuts ? items.collect{ |monitor| (0..monitor.ins.size-1) }.asClusterArg;
+		argAmps = argAmps ? items.collect{ |monitor| monitor.amps }.asClusterArg;
+		argIns = argIns ? items.collect{ |monitor| monitor.ins }.asClusterArg;
+		argFadeTime =  argFadeTime ? items.collect{ |monitor| monitor.fadeTime }.asClusterArg;
 		
 		^this.doesNotUnderstand(\playNToBundle,bundle, argOuts, argAmps, argIns, argVol, argFadeTime, inGroup, addAction, defName)
 		

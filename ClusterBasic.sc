@@ -106,12 +106,15 @@ ClusterBasic {
 	dopost{ "items:".postln; items.do(_.postln) }
 	
 	printOn { arg stream;
-		stream << this.class.asString << "(" << items << ")";
+		stream << this.class.asString << items ;
 	}
 	
 	
 	// Class methods wrapping
 	*fromArray{ |array|
+		if(array.collect{ |x| x.classÊ}.as(Set).size>1){
+			Error("ClusterBasic: "++array++" - Items should be all of the same class").throw
+		};
 	 	^super.newCopyArgs(array);
 	 }
 	 

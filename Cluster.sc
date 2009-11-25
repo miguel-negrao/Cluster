@@ -22,7 +22,7 @@ Cluster{
 		if(return[0].class == this.oclass){
 			^this
 		}{
-			^ClusterArg(return)
+			^Cluster(return)
 		}
 	
 	}
@@ -36,7 +36,7 @@ Cluster{
 		if(return[0].class == this.oclass){
 			^this
 		}{
-			^ClusterArg(return)
+			^Cluster(return)
 		}
 	}
 		
@@ -55,7 +55,7 @@ Cluster{
 		if((return[0].class == this.oclass) || (return[0] == nil)){
 			^this
 		}{
-			^ClusterArg(return)
+			^Cluster(return)
 		} 
 	
 	}	
@@ -106,12 +106,15 @@ Cluster{
 	dopost{ "items:".postln; items.do(_.postln) }
 	
 	printOn { arg stream;
-		stream << oclass.asString << "(" << items << ")";
+		stream << "Cluster" << items;
 	}
 	
 	
 	// Class methods wrapping
 	*fromArray{ |array,oclass|
+		if(array.collect{ |x| x.classÊ}.as(Set).size>1){
+			Error("Cluster: "++array++" - Items should be all of the same class").throw
+		};
 	 	^super.newCopyArgs(array,array[0].class);
 	 }
 	 
@@ -135,7 +138,7 @@ Cluster{
 							{ClusterBuffer}{ item.bufnum }
 							{item}
 					}{
-						ClusterArg(clusterobject.items.collect{ item })
+						Cluster(clusterobject.items.collect{ item })
 					}
 				}
 			}
@@ -147,7 +150,7 @@ Cluster{
 					"is array";
 					recursF2.(item,i)
 				}{
-					"is clusterarg";
+					"is Cluster";
 					item.items[i]
 				}
 			}
