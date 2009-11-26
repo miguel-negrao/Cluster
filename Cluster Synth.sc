@@ -175,7 +175,6 @@ ClusterOSCBundle : ClusterBasic{
 	
 }
 
-
 ClusterSynth : ClusterBasic{
 	var <clusterGroup, <clusterServer;	
 	
@@ -286,9 +285,7 @@ ClusterSynthDef : ClusterBasic{
 	*new { arg name, ugenGraphFuncs, rates, prependArgs, variants, clusterdata;
 
 		^this.doesNotUnderstand(\new,name, ugenGraphFuncs, rates, prependArgs, variants, clusterdata)
-	}
-
-	
+	}	
 	
 }
 
