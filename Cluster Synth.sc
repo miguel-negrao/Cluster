@@ -72,6 +72,16 @@ ClusterGroup : ClusterBasic{
 
 }
 
+ClusterRootNode : ClusterBasic{
+	
+	*oclass{ ^RootNode }
+
+	*new{ |clusterServer|
+		^this.doesNotUnderstand(\new,clusterServer)
+	}
+
+}
+
 ClusterBus : ClusterBasic{
 
 	var <clusterServer, <numChannels;
@@ -186,9 +196,12 @@ ClusterSynth : ClusterBasic{
 	}
 	
 	*new { arg defName, args, target, addAction=\addToHead;
+	
 		switch(target.class)
 			{ClusterServer}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(nil,target).prPlay(target,args,addAction) }
-			{ClusterGroup}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) };
+			{ClusterGroup}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) }
+			{ClusterRootNode}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) };
+
 			
 	}
 	
@@ -209,12 +222,14 @@ ClusterSynth : ClusterBasic{
 	*newPaused { arg defName, args, target, addAction=\addToHead;
 		switch(target.class)
 			{ClusterServer}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(nil,target) }
-			{ClusterGroup}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(target,nil) };
+			{ClusterGroup}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(target,nil) }
+			{ClusterRootNode}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(target,nil) };
+
 		
 	}
 	
 	//unsynchronized play of the synths
-	*newTest{ arg defName, args, target, addAction=\addToHead;
+	*unsync{ arg defName, args, target, addAction=\addToHead;
 		var synths;
 			
 		synths = target.items.collect{ |target,i|
@@ -224,7 +239,8 @@ ClusterSynth : ClusterBasic{
 		
 		switch(target.class)
 			{ClusterServer}{ ^super.newCopyArgs(synths,nil,target) }
-			{ClusterGroup}{ ^super.newCopyArgs(synths,target,nil) };
+			{ClusterGroup}{ ^super.newCopyArgs(synths,target,nil) }
+			{ClusterRootNode}{ ^super.newCopyArgs(synths,target,nil) };
 	}	
 	
 	//methods with defaults for args
