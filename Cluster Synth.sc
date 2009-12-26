@@ -13,8 +13,7 @@ ClusterArg : ClusterBasic{
 		("ClusterArg is dumb, it doesn't understand "++selector) 
 		^this.prExpandCollect(selector,args)
 		
-	}
-	
+	}	
 
 }
  
@@ -229,7 +228,7 @@ ClusterSynth : ClusterBasic{
 	}
 	
 	//unsynchronized play of the synths
-	*unsync{ arg defName, args, target, addAction=\addToHead;
+	*unsyncNew{ arg defName, args, target, addAction=\addToHead;
 		var synths;
 			
 		synths = target.items.collect{ |target,i|
@@ -321,8 +320,7 @@ ClusterMonitor : ClusterBasic{
 		argIns = argIns ? items.collect{ |monitor| monitor.ins }.asClusterArg;
 		argFadeTime =  argFadeTime ? items.collect{ |monitor| monitor.fadeTime }.asClusterArg;
 		
-		^this.doesNotUnderstand(\playNToBundle,bundle, argOuts, argAmps, argIns, argVol, argFadeTime, inGroup, addAction, defName)
-		
+		^this.doesNotUnderstand(\playNToBundle,bundle, argOuts, argAmps, argIns, argVol, argFadeTime, inGroup, addAction, defName)		
 	}
 	
 	playToBundle{Ê|bundle, fromIndex, fromNumChannels=2, toIndex, toNumChannels, inGroup, multi = false, volume, inFadeTime, addAction|
