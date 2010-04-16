@@ -4,6 +4,8 @@
 // class to apply methods to all elements of the items array
 // all items should be of type oclass
 
+//To Do merge Cluster and ClusterBasic into just one, and subclass as appropriate.
+
 Cluster{
 
 	var <items, <oclass;
@@ -11,13 +13,13 @@ Cluster{
 	//simple do and collect without arg not array
 	prDo{ |selector,args|
 	
-		items.do(_.tryPerform(*([selector]++args)));
+		items.do(_.perform(*([selector]++args)));
 	
 	}
 	
 	prCollect{ |selector,args|
 		
-		var return = items.collect(_.tryPerform(*([selector]++args)));
+		var return = items.collect(_.perform(*([selector]++args)));
 		
 		if(return[0].class == this.oclass){
 			^this
@@ -29,7 +31,7 @@ Cluster{
 	
 	prCollectSimple{ |selector|
 		
-		var return = items.collect(_.tryPerform(selector));
+		var return = items.collect(_.perform(selector));
 		
 		"prcollectsimple";	
 
@@ -43,20 +45,20 @@ Cluster{
 	//simple do and collect with arg an array os size items.size
 	prDoArray{ |selector,argArray|
 	
-		items.do{ |item,i| item.tryPerform(*([selector]++argArray[i]))}; 
+		items.do{ |item,i| item.perform(*([selector]++argArray[i]))}; 
 	
 	}
 	
 	prCollectArray{ |selector,argArray|
 		
-		var return = items.collect{ |item,i| item.tryPerform(*([selector]++argArray[i]))};
+		var return = items.collect{ |item,i| item.perform(*([selector]++argArray[i]))};
 		"!!!prCollectArray";
 		
-		if((return[0].class == this.oclass) || (return[0] == nil)){
-			^this
-		}{
+		//if((return[0].class == this.oclass) || (return[0] == nil)){
+		//	^this
+		//}{
 			^Cluster(return)
-		} 
+		//} 
 	
 	}	
 	
@@ -96,12 +98,19 @@ Cluster{
 	
 	//default implementation of collected classes.
 	// will work, but it's not possible to pass arguments by name. e.g. busnum: 3
-	doesNotUnderstand{ arg selector...args;
+	doesNotUnderstand{ arg selector...args;		
 		("does not understand- base class "++this.class++" selector "++selector);
-		if(oclass.findRespondingMethodFor(selector).notNil){
+		if(this.respondsTo(selector)){
 			^this.prExpandCollect(selector,args)
+		}{
+			^super.doesNotUnderstand(*([selector]++args));
 		}
+		
 	} 
+	
+	respondsTo{ |selector|
+		^items[0].respondsTo(selector)	
+	}
 		
 	dopost{ "items:".postln; items.do(_.postln) }
 	
@@ -109,6 +118,33 @@ Cluster{
 		stream << "Cluster" << items;
 	}
 	
+	clApply{ |func|
+		^Cluster(items.collect{ |item| func.(item) })
+	}
+	
+	clApplyF{ |func|
+		^Cluster(items.collect{ |item| { func.(item) } })	
+	}
+	
+	*applyN{ arg func ...clusterObjects;
+		var n = clusterObjects.collect{ |obj|
+			if(obj.class == Cluster){obj.items.size}{1}
+		}.maxItem;
+		//if object is not cluster it is duplicated to the maximum number of items and made into a cluster.
+		clusterObjects = clusterObjects.collect{ |obj|
+			if(obj.class != Cluster){Cluster(obj.dup(n))}{obj}
+		};	
+		
+		^Cluster(n.collect{ |i| 
+			func.(*clusterObjects.collect{ |clusterObj| 
+				if(clusterObj.items.size == n){
+					clusterObj.items[i]
+				}{
+					clusterObj.items[0]
+				}
+			}) 
+		})
+	}
 	
 	// Class methods wrapping
 	*fromArray{ |array,oclass|
@@ -131,12 +167,9 @@ Cluster{
 				if(item.isArray && item.isString.not){
 					recursF1.(item,clusterobject)
 				}{
-					if(item.class.superclasses.includes(ClusterBasic)){
+					if(item.class == Cluster){
 						clusterObject.prCheckSize(item);
-						switch(item.class)
-							{ClusterBus}{ item.index }
-							{ClusterBuffer}{ item.bufnum }
-							{item}
+						item
 					}{
 						Cluster(clusterobject.items.collect{ item })
 					}

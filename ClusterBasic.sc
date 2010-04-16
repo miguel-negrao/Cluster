@@ -47,13 +47,22 @@ ClusterBasic {
 	
 	prCollectArray{ |selector,argArray|
 		
-		var return = items.collect{ |item,i| item.tryPerform(*([selector]++argArray[i]))};
+		var clusterClasses,
+		return = items.collect{ |item,i| item.tryPerform(*([selector]++argArray[i]))};
 		"!!!prCollectArray";
 		
 		if((return[0].class == this.oclass) || (return[0] == nil)){
 			^this
 		}{
-			^ClusterArg(return)
+			
+			clusterClasses = ClusterBasic.allSubclasses;
+			clusterClasses.remove(this.class);
+			clusterClasses = clusterClasses.collect(_.oclass); 
+			if(clusterClasses.includes(return[0].class)){
+				^("Cluster"++return[0].class.asCompileString).compile.value.fromArray(return)
+			}{
+				^ClusterArg(return)
+			}
 		} 
 	
 	}	
@@ -94,12 +103,20 @@ ClusterBasic {
 	
 	//default implementation of collected classes.
 	// will work, but it's not possible to pass arguments by name. e.g. busnum: 3
-	doesNotUnderstand{ arg selector...args;
+
+	doesNotUnderstand{ arg selector...args;		
 		("does not understand- base class "++this.class++" selector "++selector);
-		if(this.oclass.findRespondingMethodFor(selector).notNil){
+		if(this.respondsTo(selector)){
 			^this.prExpandCollect(selector,args)
+		}{
+			^super.doesNotUnderstand(*([selector]++args));
 		}
+		
 	} 
+	
+	respondsTo{ |selector|
+		^items[0].respondsTo(selector)	
+	}
 	
 	oclass{ ^this.class.oclass }
 	
@@ -222,11 +239,50 @@ ClusterBasic {
 		^Object
 	}
 	
-
+	clusterfy{ 
+		^this
+	}
+	
+	clApplyF{ |func|
+		^ClusterArg(items.collect{ |item| { func.(item) } })	
+	}	
+	
+	//explicit overloading of methods from Object
+	
+	changed { arg what ... moreArgs;
+		^this.doesNotUnderstand(*([\changed,what]++moreArgs));
+	}
+	
+	addDependant { arg dependant;
+		dependant.postln;
+		^this.doesNotUnderstand(\addDependant,dependant);
+	}
+	
+	removeDependant { arg dependant;
+		^this.doesNotUnderstand(\removeDependant,dependant);
+	}
+	release {
+		^this.doesNotUnderstand(\release)
+	}
+	releaseDependants {
+		^this.doesNotUnderstand(\releaseDependants)
+	}
+	
 }
 
 
++ Object {
 
+	clusterfy{
+		if(ClusterBasic.allSubclasses.collect(_.oclass).includes(this.class)){
+			^("Cluster"++this.class.asCompileString).compile.value.fromArray([this])	
+		}{
+			Error("object class is not compatible with Cluster server classes")
+		}
+	}
+
+
+}
 
 
 

@@ -33,6 +33,10 @@ ClusterServer : ClusterBasic{
 
 	addToSyncCenter{
 		items.do(SyncCenter.add(_))
+	}
+	
+	*default{
+		^ClusterServer([Server.default])
 	}		
 
 }
