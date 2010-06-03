@@ -243,6 +243,10 @@ ClusterBasic {
 		^this
 	}
 	
+	deCluster{
+		^items[0]
+	}
+	
 	clApplyF{ |func|
 		^ClusterArg(items.collect{ |item| { func.(item) } })	
 	}	
@@ -254,7 +258,6 @@ ClusterBasic {
 	}
 	
 	addDependant { arg dependant;
-		dependant.postln;
 		^this.doesNotUnderstand(\addDependant,dependant);
 	}
 	

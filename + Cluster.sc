@@ -32,8 +32,7 @@
 	//unsyncronized
 	playCluster{ |clustertarget,args,addAction=\addToTail|
 		var synths = clustertarget.items.collect{ |target|
-			target.postln;
-			this.play(target,args,addAction).postln
+			this.play(target,args,addAction)
 		};
 		^ClusterSynth.fromArray(synths);
 		
