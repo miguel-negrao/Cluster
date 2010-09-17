@@ -199,16 +199,19 @@ ClusterSynth : ClusterBasic{
 	}
 	
 	*new { arg defName, args, target, addAction=\addToHead;
-	
-		switch(target.class)
-			{ClusterServer}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(nil,target).prPlay(target,args,addAction) }
-			{ClusterGroup}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) }
-			{ClusterRootNode}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) };
+		if('SyncCenter'.asClass.notNil){
+			switch(target.class)
+				{ClusterServer}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(nil,target).prPlay(target,args,addAction) }
+				{ClusterGroup}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) }
+				{ClusterRootNode}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) };
+		}{
+			this.unsyncNew(defName, args, target, addAction)
+		}
 
 			
 	}
 	
-	prPlay{ |target,args,addAction|	
+	prPlay{ |target,args,addAction|		
 		var bundle;
 		if(SyncCenter.ready){
 				bundle = ClusterOSCBundle.new(target);
