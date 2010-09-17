@@ -132,7 +132,7 @@ Cluster{
 		}.maxItem;
 		//if object is not cluster it is duplicated to the maximum number of items and made into a cluster.
 		clusterObjects = clusterObjects.collect{ |obj|
-			if(obj.class != Cluster){Cluster(obj.dup(n))}{obj}
+			if(obj.class != Cluster){Cluster(Array.fill(n,{obj}))}{obj}
 		};	
 		
 		^Cluster(n.collect{ |i| 
