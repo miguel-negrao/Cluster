@@ -205,7 +205,7 @@ ClusterSynth : ClusterBasic{
 				{ClusterGroup}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) }
 				{ClusterRootNode}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) };
 		}{
-			this.unsyncNew(defName, args, target, addAction)
+			^this.unsyncNew(defName, args, target, addAction)
 		}
 
 			
