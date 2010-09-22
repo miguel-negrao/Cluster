@@ -53,28 +53,3 @@
 	}
 	
 }
-
-+ SyncCenter{
-
-	*sendPosClusterBundle{ |delta = 1, clusterbundle, clusterserver|
-		
-		if(remoteCounts.size == servers.size){
-			clusterbundle.sendPos(clusterserver,this.getSchedulingSampleCountSCluster(delta,clusterserver)) 
-		}{
-			"SyncCenter: Sorry, not synced yet".postln
-		}
-
-	}
-	
-	*getSchedulingSampleCountSCluster{ |delta = 1, clusterserver|
-		
-		var positions = clusterserver.items.collect{ |server|
-			var serverIndex = servers.indexOf(server);
-			this.getSchedulingSampleCount(delta,serverIndex);
-		};
-		^ClusterArg(positions)
-	}
-	
-}
-	
-
