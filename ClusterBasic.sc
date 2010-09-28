@@ -68,8 +68,7 @@ ClusterBasic {
 		}{
 			//if method not implemented than call Object's doesNotUnderstand
 			^super.doesNotUnderstand(*([selector]++args));
-		}
-		
+		}		
 	} 
 	
 	respondsTo{ |selector|
@@ -164,8 +163,8 @@ ClusterBasic {
 		var  referenceCluster;
 		("prExpandCollect - this class: "++this.class);
 		if(args.size == 0){
-			"*prExpandCollect - no arguments".postln;
-			^this.prCollectSimple(selector)
+			"*prExpandCollect - no arguments - not doing anything at the moment - probably you want a class var, just get it directly".postln;
+			//^this.prCollectSimple(selector)
 		}{	
 			referenceCluster = this.searchArrayForCluster(args);
 			^this.prCollectWithArgs(selector,this.expandArray(args,referenceCluster),referenceCluster)
@@ -174,7 +173,7 @@ ClusterBasic {
 
 	*doesNotUnderstand{ arg selector...args;
 		var cluster;
-		("doesNotUnderstand - "++selector++" this class: "++this.class++" args is "++args).postln;
+		("doesNotUnderstand - "++selector++" this class: "++this.class++" args is "++args);
 		if(this.oclass.class.findRespondingMethodFor(selector).notNil){
 			^super.newCopyArgs(this.prExpandCollect(selector,args))
 		}		
