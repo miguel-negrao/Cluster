@@ -189,67 +189,25 @@ ClusterOSCBundle : ClusterBasic{
 }
 
 ClusterSynth : ClusterBasic{
-	var <clusterGroup, <clusterServer;	
-	
-	*oclass{ ^ Synth }
 
-	init{ |aclusterGroup, aclusterServer|
-		clusterGroup = aclusterGroup;
-		clusterServer = aclusterServer;
-	}
+	*oclass{ ^ Synth }
 	
 	*new { arg defName, args, target, addAction=\addToHead;
 		if('SyncCenter'.asClass.notNil){
-			switch(target.class)
-				{ClusterServer}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(nil,target).prPlay(target,args,addAction) }
-				{ClusterGroup}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) }
-				{ClusterRootNode}{ ^this.doesNotUnderstand(\basicNew,defName, target.server).init(target,nil).prPlay(target,args,addAction) };
+			^this.doesNotUnderstand(\basicNew,defName, target.server).syncedPlay(target,args,addAction)
 		}{
-			^this.unsyncNew(defName, args, target, addAction)
-		}
-
-			
+			^this.doesNotUnderstand(\new,defName, args, target, addAction)
+		}			
 	}
-	
-	prPlay{ |target,args,addAction|		
+
+	syncedPlay{ |target,args,addAction|		
 		var bundle;
 		if(SyncCenter.ready){
 				bundle = ClusterOSCBundle.new(target);
 				bundle.add(this.newMsg(target,args,addAction));
-				bundle.dopost;
 				SyncCenter.sendPosClusterBundle(1,bundle,target.clusterServer)
-		}{
-		"SyncCenter not ready".postln;	
 		}	
 	}
-	
-	*basicNew { arg defName, server, nodeID;
-		^this.doesNotUnderstand(\basicNew,defName, server, nodeID).init(nil,server)
-	}
-	
-	*newPaused { arg defName, args, target, addAction=\addToHead;
-		switch(target.class)
-			{ClusterServer}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(nil,target) }
-			{ClusterGroup}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(target,nil) }
-			{ClusterRootNode}{ ^this.doesNotUnderstand(\newPaused,defName, args, target, addAction).init(target,nil) };
-
-		
-	}
-	
-	//unsynchronized play of the synths
-	*unsyncNew{ arg defName, args, target, addAction=\addToHead;
-		var synths;
-			
-		synths = target.items.collect{ |target,i|
-			Synth(this.prDefName(defName,i),args, target, addAction);
-						
-		};
-		
-		switch(target.class)
-			{ClusterServer}{ ^super.newCopyArgs(synths,nil,target) }
-			{ClusterGroup}{ ^super.newCopyArgs(synths,target,nil) }
-			{ClusterRootNode}{ ^super.newCopyArgs(synths,target,nil) };
-	}	
 	
 	//methods with defaults for args
 	run { arg flag=true;
