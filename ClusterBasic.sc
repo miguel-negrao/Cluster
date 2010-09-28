@@ -2,63 +2,53 @@
 // GPLv2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 
-ClusterBasic {
-	
+ClusterBasic {	
 	var <items;
 	
 	//no arguments
-	prCollectSimple{ |selector|
-		
+	prCollectNoArgs{ |selector|			
 		var return = items.collect(_.tryPerform(selector));
-		
 		"prcollectsimple";	
-
-		if(return[0].class == this.oclass){
-			^this
-		}{
-			^ClusterArg(return)
-		}
+		^this.getReturnClusterObject(return);
 	}
 	
 	//with arguments
-	prCollectWithArgs{ |selector,argArray|
-		
-		var clusterClasses,
-		return = items.collect{ |item,i| item.tryPerform(*([selector]++argArray[i]))};
-		"!!!prCollectWithArgs";
-		
-		if((return[0].class == this.oclass) || (return[0] == nil)){
+	prCollectWithArgs{ |selector,argArray|		
+		var return = items.collect{ |item,i| item.tryPerform(*([selector]++argArray[i]))};
+		"!!!prCollectWithArgs";		
+		^this.getReturnClusterObject(return);
+	}		
+	
+	getReturnClusterObject{ |returnArray|
+		var clusterClasses;
+		if((returnArray[0].class == this.oclass) || (returnArray[0] == nil)){
 			^this
 		}{
-			
 			clusterClasses = ClusterBasic.allSubclasses;
 			clusterClasses.remove(this.class);
 			clusterClasses = clusterClasses.collect(_.oclass); 
-			if(clusterClasses.includes(return[0].class)){
-				^("Cluster"++return[0].class.asCompileString).compile.value.fromArray(return)
+			if(clusterClasses.includes(returnArray[0].class)){
+				^("Cluster"++returnArray[0].class.asCompileString).compile.value.fromArray(returnArray)
 			}{
-				^ClusterArg(return)
+				^ClusterArg(returnArray)
 			}
-		} 
-	
-	}		
+		} 		
+	}
 		
 	//expand a set of arguments into an array of size items.size
-	prExpand{ |args|
+	prExpandArgs{ |args|
 		("prExpand: "++args);	
 		^ClusterBasic.expandArray(args,this);
 	}
 
-	prExpandCollect{ |selector,args|
-	
+	prExpandCollect{ |selector,args|		
 		if(args.isNil){
 			"args nil";
-			^this.prCollectSimple(selector)
+			^this.prCollectNoArgs(selector)
 		}{	
 			"args not nil";
-			^this.prCollectWithArgs(selector,this.prExpand(args))
-		}
-	
+			^this.prCollectWithArgs(selector,this.prExpandArgs(args))
+		}	
 	}
 	
 	prCheckSize{ |clusterobject|
@@ -76,6 +66,7 @@ ClusterBasic {
 		if(this.respondsTo(selector)){
 			^this.prExpandCollect(selector,args)
 		}{
+			//if method not implemented than call Object's doesNotUnderstand
 			^super.doesNotUnderstand(*([selector]++args));
 		}
 		
@@ -91,8 +82,7 @@ ClusterBasic {
 	
 	printOn { arg stream;
 		stream << this.class.asString << items ;
-	}
-	
+	}	
 	
 	// Class methods wrapping
 	*fromArray{ |array|
@@ -106,10 +96,8 @@ ClusterBasic {
 	 	^this.fromArray(array);
 	 }
 	 
-	*expandArray{ |array,clusterObject|
-	
-		var recursF1,recursF2,finalF;
-		
+	*expandArray{ |array,clusterObject|	
+		var recursF1,recursF2,finalF;		
 		recursF1 = { |array,clusterobject|
 			array.collect{ |item|
 				if(item.isArray && item.isString.not){
@@ -126,8 +114,7 @@ ClusterBasic {
 					}
 				}
 			}
-		};	
-				
+		};			
 		recursF2 = { |array,i|
 			array.collect{ |item|
 				if(item.isArray && item.isString.not){
@@ -138,8 +125,7 @@ ClusterBasic {
 					item.items[i]
 				}
 			}
-		}; 
-		
+		};		
 		finalF = { |array,clusterobject|
 			clusterobject.items.collect{ |adas,i|
 				("line "++i);
@@ -150,7 +136,6 @@ ClusterBasic {
 	}
 	
 	*searchArrayForCluster{ |array|
-
 		array.do{ |item|
 			if(item.class.superclasses.includes(ClusterBasic)){
 				^item
@@ -166,55 +151,40 @@ ClusterBasic {
 	
 	*prCollectSimple{ |selector,referenceCluster|
 		("prCollectSimple - this class: "++this.class);
-
 		^referenceCluster.items.collect(this.perform(selector));
 	}
 	
 	*prCollectWithArgs{ |selector,argArray,referenceCluster|
-		
 		("prCollectWithArgs - this class: "++this.class);
-		
 		^referenceCluster.items.collect{ |item,i| this.oclass.perform(*([selector]++argArray[i]))};
-	
 	}	
 	
 	*prExpandCollect{ |selector,args,referenceCluster|
 		("prExpandCollect - this class: "++this.class);
-		
 		if(args.isNil){
 			^this.prCollectSimple(selector,referenceCluster)
 		}{	
 			^this.prCollectWithArgs(selector,this.expandArray(args,referenceCluster),referenceCluster)
-		}
-	
+		}	
 	}	
 
 	*doesNotUnderstand{ arg selector...args;
 		var cluster;
-
 		("doesNotUnderstand - "++selector++" this class: "++this.class);
-
 		if(this.oclass.class.findRespondingMethodFor(selector).notNil){
 			cluster = this.searchArrayForCluster(args);
 			^super.newCopyArgs(this.prExpandCollect(selector,args,cluster))
-		}
-		
+		}		
 	} 
 	
-	*oclass{
-		^Object
-	}
+	*oclass{ 	^Object }
 	
-	clusterfy{ 
-		^this
-	}
+	clusterfy{ ^this }
 	
-	deCluster{
-		^items[0]
-	}
+	deCluster{ ^items[0] }
 	
 	clApplyF{ |func|
-		^ClusterArg(items.collect{ |item| { func.(item) } })	
+		^ClusterArg(items.collect{ |item| { func.(item) } })
 	}	
 	
 	//explicit overloading of methods from Object
@@ -235,10 +205,8 @@ ClusterBasic {
 	}
 	releaseDependants {
 		^this.doesNotUnderstand(\releaseDependants)
-	}
-	
+	}	
 }
-
 
 + Object {
 
@@ -252,24 +220,3 @@ ClusterBasic {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
