@@ -9,14 +9,7 @@
 Cluster{
 
 	var <items, <oclass;
-	
-	//simple do and collect without arg not array
-	prDo{ |selector,args|
-	
-		items.do(_.perform(*([selector]++args)));
-	
-	}
-	
+		
 	prCollect{ |selector,args|
 		
 		var return = items.collect(_.perform(*([selector]++args)));
@@ -41,14 +34,7 @@ Cluster{
 			^Cluster(return)
 		}
 	}
-		
-	//simple do and collect with arg an array os size items.size
-	prDoArray{ |selector,argArray|
-	
-		items.do{ |item,i| item.perform(*([selector]++argArray[i]))}; 
-	
-	}
-	
+
 	prCollectArray{ |selector,argArray|
 		
 		var return = items.collect{ |item,i| item.perform(*([selector]++argArray[i]))};
@@ -60,21 +46,12 @@ Cluster{
 			^Cluster(return)
 		//} 
 	
-	}	
-	
+	}		
 		
 	//expand a set of arguments into an array of size items.size
-
 	prExpand{ |args|
 		("prExpand: "++args);	
 		^Cluster.expandArray(args,this);
-	}
-	
-	
-	prExpandDo{ |selector,args|
-	
-		this.prDoArray(selector,this.prExpand(args))
-	
 	}
 	
 	prExpandCollect{ |selector,args|
