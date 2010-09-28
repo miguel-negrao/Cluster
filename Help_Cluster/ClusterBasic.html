@@ -12,14 +12,11 @@ p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0p
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p5 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; color: #e10000}
-p.p6 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; color: #000000}
+p.p6 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco}
 p.p7 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; color: #3300d3}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
-p.p9 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
-p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #e10000}
-p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #3300d3}
-p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
-p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #e10000}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #3300d3}
 span.s1 {font: 18.0px Helvetica}
 span.s2 {color: #000000}
 span.s3 {color: #3300d3}
@@ -55,33 +52,33 @@ span.Apple-tab-span {white-space:pre}
 <p class="p8"><span class="Apple-tab-span">	</span><span class="s3">Server</span>(<span class="s4">"slave2"</span>,<span class="s3">NetAddr</span>(<span class="s4">"127.0.0.1"</span>, 53178),~options).boot.makeWindow]);</p>
 <p class="p8">~server.boot;</p>
 <p class="p6">)</p>
-<p class="p9"><br></p>
-<p class="p10">//Startup - Sample accurate usage. Run this if instead of above if you have SyncCenter installed.</p>
+<p class="p4"><br></p>
+<p class="p9">//Startup - Sample accurate usage. Run this if instead of above if you have SyncCenter installed.</p>
 <p class="p8">(</p>
 <p class="p8"><span class="s3">SyncCenter</span>.initClass;</p>
 <p class="p8"><span class="s3">SyncCenter</span>.master = <span class="s3">Server</span>(<span class="s4">"master"</span>,<span class="s3">NetAddr</span>(<span class="s4">"127.0.0.1"</span>, 53428)).boot.makeWindow;</p>
 <p class="p8">)</p>
 <p class="p8">(</p>
 <p class="p8">~options = <span class="s3">ServerOptions</span>.new.numInputBusChannels_(10);</p>
-<p class="p11"><span class="s2">~server = </span>ClusterServer<span class="s2">([</span></p>
+<p class="p10"><span class="s2">~server = </span>ClusterServer<span class="s2">([</span></p>
 <p class="p8"><span class="Apple-tab-span">	</span><span class="s3">Server</span>(<span class="s4">"slave1"</span>,<span class="s3">NetAddr</span>(<span class="s4">"127.0.0.1"</span>, 53177),~options).boot.makeWindow,</p>
 <p class="p8"><span class="Apple-tab-span">	</span><span class="s3">Server</span>(<span class="s4">"slave2"</span>,<span class="s3">NetAddr</span>(<span class="s4">"127.0.0.1"</span>, 53178),~options).boot.makeWindow]);</p>
 <p class="p8">~server.boot;</p>
 <p class="p8">~server.addToSyncCenter;</p>
 <p class="p8"><span class="s3">SyncCenter</span>.inBus = 9;</p>
 <p class="p8"><span class="s3">SyncCenter</span>.outBus = 0;</p>
-<p class="p10">//use jack audio or an adat connection for this.</p>
-<p class="p12"><br></p>
+<p class="p9">//use jack audio or an adat connection for this.</p>
+<p class="p3"><br></p>
 <p class="p8">)</p>
-<p class="p12"><br></p>
+<p class="p3"><br></p>
 <p class="p8"><span class="s3">SyncCenter</span>.remoteSync; <span class="s5">//run this</span></p>
 <p class="p8"><span class="s3">SyncCenter</span>.remoteCounts <span class="s5">//check values</span></p>
-<p class="p12"><br></p>
-<p class="p10">// USAGE</p>
-<p class="p10">//send synthdef</p>
-<p class="p11">SynthDef<span class="s2">(</span><span class="s6">\test</span><span class="s2">,{ </span>|out = 0, freq = 400, amp = 0.2|<span class="s2"> </span>OffsetOut<span class="s2">.ar(out,</span>SinOsc<span class="s2">.ar(freq)*amp) }).sendCluster(~server);</span></p>
-<p class="p12"><br></p>
-<p class="p10">//basic synth stuff</p>
+<p class="p3"><br></p>
+<p class="p9">// USAGE</p>
+<p class="p9">//send synthdef</p>
+<p class="p10">SynthDef<span class="s2">(</span><span class="s6">\test</span><span class="s2">,{ </span>|out = 0, freq = 400, amp = 0.2|<span class="s2"> </span>OffsetOut<span class="s2">.ar(out,</span>SinOsc<span class="s2">.ar(freq)*amp) }).sendCluster(~server);</span></p>
+<p class="p3"><br></p>
+<p class="p9">//basic synth stuff</p>
 <p class="p8">(</p>
 <p class="p8">~group = <span class="s3">ClusterGroup</span>(~server);</p>
 <p class="p8">~synth = <span class="s3">ClusterSynth</span>(<span class="s6">\test</span>,target: ~group)</p>
@@ -90,9 +87,9 @@ span.Apple-tab-span {white-space:pre}
 <p class="p8">~synth.run(<span class="s3">true</span>);</p>
 <p class="p8">~synth.run(<span class="s3">false</span>);</p>
 <p class="p8">~synth.free</p>
-<p class="p12"><br></p>
+<p class="p3"><br></p>
 <p class="p8">~bus = <span class="s3">ClusterBus</span>.audio(~server,1)</p>
-<p class="p12"><br></p>
+<p class="p3"><br></p>
 <p class="p8">~synth.set(<span class="s6">\freq</span>,3600)</p>
 <p class="p8">~synth.set(<span class="s6">\freq</span>,[300,2200].asClusterArg,<span class="s6">\amp</span>,[0.05,0.1].asClusterArg)</p>
 <p class="p8">~synth.set(<span class="s6">\amp</span>,1)</p>
@@ -100,45 +97,45 @@ span.Apple-tab-span {white-space:pre}
 <p class="p8">~synth.set(<span class="s6">\out</span>,~bus.index)<span class="Apple-converted-space"> </span></p>
 <p class="p8">~synth.set(<span class="s6">\out</span>,0)<span class="Apple-converted-space"> </span></p>
 <p class="p8">~synth.get(<span class="s6">\freq</span>,{ <span class="s3">|v|</span> v.value.postln })</p>
-<p class="p12"><br></p>
-<p class="p10">//bundling</p>
+<p class="p3"><br></p>
+<p class="p9">//bundling</p>
 <p class="p8">(</p>
 <p class="p8">fork{</p>
-<p class="p11"><span class="Apple-tab-span">	</span>SynthDef<span class="s2">(</span><span class="s6">\test</span><span class="s2">,{ </span>|out = 0, freq = 400, amp = 0.2|<span class="s2"> </span>OffsetOut<span class="s2">.ar(out,</span>SinOsc<span class="s2">.ar(freq)*amp) }).sendCluster(~server);</span></p>
+<p class="p10"><span class="Apple-tab-span">	</span>SynthDef<span class="s2">(</span><span class="s6">\test</span><span class="s2">,{ </span>|out = 0, freq = 400, amp = 0.2|<span class="s2"> </span>OffsetOut<span class="s2">.ar(out,</span>SinOsc<span class="s2">.ar(freq)*amp) }).sendCluster(~server);</span></p>
 <p class="p8"><span class="Apple-tab-span">	</span>~server.sync;</p>
-<p class="p13"><span class="Apple-tab-span">	</span>~group = <span class="s3">ClusterGroup</span>.basicNew(~server);</p>
-<p class="p13"><span class="Apple-tab-span">	</span>~synth = <span class="s3">ClusterSynth</span>.basicNew(<span class="s6">\test</span>,~server);</p>
-<p class="p13"><span class="Apple-tab-span">	</span>~bundle = <span class="s3">ClusterOSCBundle</span>.new(~server);</p>
-<p class="p13"><span class="Apple-tab-span">	</span>~bundle.add(~group.newMsg(~server));</p>
-<p class="p13"><span class="Apple-tab-span">	</span>~bundle.add(~synth.newMsg(~group));</p>
-<p class="p13"><span class="Apple-tab-span">	</span>~bundle.dopost;</p>
-<p class="p13"><span class="Apple-tab-span">	</span>if(<span class="s6">'SyncCenter'</span>.asClass.notNil){</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">'SyncCenter'</span>.asClass.sendPosClusterBundle(1,~bundle,~server);</p>
-<p class="p13"><span class="Apple-tab-span">	</span>}{</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~bundle.send(~server)</p>
-<p class="p13"><span class="Apple-tab-span">	</span>}</p>
-<p class="p13">}</p>
-<p class="p13">)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>~group = <span class="s3">ClusterGroup</span>.basicNew(~server);</p>
+<p class="p8"><span class="Apple-tab-span">	</span>~synth = <span class="s3">ClusterSynth</span>.basicNew(<span class="s6">\test</span>,~server);</p>
+<p class="p8"><span class="Apple-tab-span">	</span>~bundle = <span class="s3">ClusterOSCBundle</span>.new(~server);</p>
+<p class="p8"><span class="Apple-tab-span">	</span>~bundle.add(~group.newMsg(~server));</p>
+<p class="p8"><span class="Apple-tab-span">	</span>~bundle.add(~synth.newMsg(~group));</p>
+<p class="p8"><span class="Apple-tab-span">	</span>~bundle.dopost;</p>
+<p class="p8"><span class="Apple-tab-span">	</span>if(<span class="s6">'SyncCenter'</span>.asClass.notNil){</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">'SyncCenter'</span>.asClass.sendPosClusterBundle(1,~bundle,~server);</p>
+<p class="p8"><span class="Apple-tab-span">	</span>}{</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~bundle.send(~server)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>}</p>
+<p class="p8">}</p>
+<p class="p8">)</p>
 <p class="p3"><br></p>
-<p class="p10">//sample accurate -&gt; phase cancelation</p>
-<p class="p13">(</p>
-<p class="p13">fork{</p>
-<p class="p13">~synthDef = <span class="s3">ClusterSynthDef</span>([<span class="s6">\test1</span>,<span class="s6">\test2</span>].asClusterArg,2.collect{ <span class="s3">|i|</span></p>
-<p class="p13"><span class="Apple-tab-span">	</span>{ <span class="s3">|out = 0, bufnum=0, amp = 0.2|</span> <span class="s3">OffsetOut</span>.ar(out,<span class="s3">PlayBuf</span>.ar(1,bufnum)*if(i==0){amp}{amp.neg} )} }.asClusterArg);</p>
-<p class="p13">~synthDef.send(~server);<span class="Apple-converted-space"> </span></p>
-<p class="p13">~buffer = <span class="s3">ClusterBuffer</span>.read(~server, <span class="s4">"sounds/a11wlk01.wav"</span>);</p>
-<p class="p13">~server.sync;</p>
-<p class="p13">~synth = <span class="s3">ClusterSynth</span>(~synthDef.name,[<span class="s6">\bufnum</span>,~buffer,<span class="s6">\amp</span>,0.2],~server)</p>
-<p class="p13">}</p>
-<p class="p13">)</p>
-<p class="p3"><br></p>
-<p class="p3"><br></p>
-<p class="p10">// you should hear absolute silence if synced !!!!</p>
+<p class="p9">//sample accurate -&gt; phase cancelation</p>
+<p class="p8">(</p>
+<p class="p8">fork{</p>
+<p class="p8">~synthDef = <span class="s3">ClusterSynthDef</span>([<span class="s6">\test1</span>,<span class="s6">\test2</span>].asClusterArg,2.collect{ <span class="s3">|i|</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span>{ <span class="s3">|out = 0, bufnum=0, amp = 0.2|</span> <span class="s3">OffsetOut</span>.ar(out,<span class="s3">PlayBuf</span>.ar(1,bufnum)*if(i==0){amp}{amp.neg} )} }.asClusterArg);</p>
+<p class="p8">~synthDef.send(~server);<span class="Apple-converted-space"> </span></p>
+<p class="p8">~buffer = <span class="s3">ClusterBuffer</span>.read(~server, <span class="s4">"sounds/a11wlk01.wav"</span>);</p>
+<p class="p8">~server.sync;</p>
+<p class="p8">~synth = <span class="s3">ClusterSynth</span>(~synthDef.name,[<span class="s6">\bufnum</span>,~buffer,<span class="s6">\amp</span>,0.2],~server)</p>
+<p class="p8">}</p>
+<p class="p8">)</p>
 <p class="p3"><br></p>
 <p class="p3"><br></p>
-<p class="p10">//clusterfy objects</p>
-<p class="p13">s.clusterfy</p>
-<p class="p13"><span class="s3">Bus</span>.audio(s,1).clusterfy</p>
+<p class="p9">// you should hear absolute silence if synced !!!!</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p9">//clusterfy objects</p>
+<p class="p8">s.clusterfy</p>
+<p class="p8"><span class="s3">Bus</span>.audio(s,1).clusterfy</p>
 <p class="p3"><br></p>
 <p class="p3"><br></p>
 <p class="p3"><br></p>
