@@ -42,7 +42,7 @@ ClusterBasic {
 	}
 
 	prExpandCollect{ |selector,args|		
-		if(args.isNil){
+		if(args.size == 0){
 			"args nil";
 			^this.prCollectNoArgs(selector)
 		}{	
@@ -149,9 +149,10 @@ ClusterBasic {
 		Error("arguments must have at least one Cluster class instance").throw
 	}
 	
+	// is there a case beyond getters and setters for classvars that a class method is called with no arguments and no defaults ?
 	*prCollectSimple{ |selector,referenceCluster|
 		("prCollectSimple - this class: "++this.class);
-		^referenceCluster.items.collect(this.perform(selector));
+		^ClusterArg([this.oclass.perform(selector)]);
 	}
 	
 	*prCollectWithArgs{ |selector,argArray,referenceCluster|
@@ -159,21 +160,23 @@ ClusterBasic {
 		^referenceCluster.items.collect{ |item,i| this.oclass.perform(*([selector]++argArray[i]))};
 	}	
 	
-	*prExpandCollect{ |selector,args,referenceCluster|
+	*prExpandCollect{ |selector,args|
+		var  referenceCluster;
 		("prExpandCollect - this class: "++this.class);
-		if(args.isNil){
-			^this.prCollectSimple(selector,referenceCluster)
+		if(args.size == 0){
+			"*prExpandCollect - no arguments".postln;
+			^this.prCollectSimple(selector)
 		}{	
+			referenceCluster = this.searchArrayForCluster(args);
 			^this.prCollectWithArgs(selector,this.expandArray(args,referenceCluster),referenceCluster)
 		}	
 	}	
 
 	*doesNotUnderstand{ arg selector...args;
 		var cluster;
-		("doesNotUnderstand - "++selector++" this class: "++this.class);
+		("doesNotUnderstand - "++selector++" this class: "++this.class++" args is "++args).postln;
 		if(this.oclass.class.findRespondingMethodFor(selector).notNil){
-			cluster = this.searchArrayForCluster(args);
-			^super.newCopyArgs(this.prExpandCollect(selector,args,cluster))
+			^super.newCopyArgs(this.prExpandCollect(selector,args))
 		}		
 	} 
 	
