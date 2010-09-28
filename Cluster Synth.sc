@@ -49,7 +49,7 @@ ClusterGroup : ClusterBasic{
 	*oclass{ ^Group }
 	
 	*new { arg target, addAction=\addToHead;	
-		^this.doesNotUnderstand(\basicNew,target, addAction).init(target)
+		^this.doesNotUnderstand(\new,target, addAction).init(target)
 	}
 	
 	*basicNew { arg server, nodeID;
@@ -218,6 +218,8 @@ ClusterSynth : ClusterBasic{
 				bundle.add(this.newMsg(target,args,addAction));
 				bundle.dopost;
 				SyncCenter.sendPosClusterBundle(1,bundle,target.clusterServer)
+		}{
+		"SyncCenter not ready".postln;	
 		}	
 	}
 	
