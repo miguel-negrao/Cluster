@@ -6,25 +6,7 @@ ClusterBasic {
 	
 	var <items;
 	
-	//simple do and collect without arg not array
-	prDo{ |selector,args|
-	
-		items.do(_.tryPerform(*([selector]++args)));
-	
-	}
-	
-	prCollect{ |selector,args|
-		
-		var return = items.collect(_.tryPerform(*([selector]++args)));
-		
-		if(return[0].class == this.oclass){
-			^this
-		}{
-			^ClusterArg(return)
-		}
-	
-	}
-	
+	//no arguments
 	prCollectSimple{ |selector|
 		
 		var return = items.collect(_.tryPerform(selector));
@@ -37,19 +19,13 @@ ClusterBasic {
 			^ClusterArg(return)
 		}
 	}
-		
-	//simple do and collect with arg an array os size items.size
-	prDoArray{ |selector,argArray|
 	
-		items.do{ |item,i| item.tryPerform(*([selector]++argArray[i]))}; 
-	
-	}
-	
-	prCollectArray{ |selector,argArray|
+	//with arguments
+	prCollectWithArgs{ |selector,argArray|
 		
 		var clusterClasses,
 		return = items.collect{ |item,i| item.tryPerform(*([selector]++argArray[i]))};
-		"!!!prCollectArray";
+		"!!!prCollectWithArgs";
 		
 		if((return[0].class == this.oclass) || (return[0] == nil)){
 			^this
@@ -65,23 +41,14 @@ ClusterBasic {
 			}
 		} 
 	
-	}	
-	
+	}		
 		
 	//expand a set of arguments into an array of size items.size
-
 	prExpand{ |args|
 		("prExpand: "++args);	
 		^ClusterBasic.expandArray(args,this);
 	}
-	
-	
-	prExpandDo{ |selector,args|
-	
-		this.prDoArray(selector,this.prExpand(args))
-	
-	}
-	
+
 	prExpandCollect{ |selector,args|
 	
 		if(args.isNil){
@@ -89,7 +56,7 @@ ClusterBasic {
 			^this.prCollectSimple(selector)
 		}{	
 			"args not nil";
-			^this.prCollectArray(selector,this.prExpand(args))
+			^this.prCollectWithArgs(selector,this.prExpand(args))
 		}
 	
 	}
@@ -203,9 +170,9 @@ ClusterBasic {
 		^referenceCluster.items.collect(this.perform(selector));
 	}
 	
-	*prCollectArray{ |selector,argArray,referenceCluster|
+	*prCollectWithArgs{ |selector,argArray,referenceCluster|
 		
-		("prCollectArray - this class: "++this.class);
+		("prCollectWithArgs - this class: "++this.class);
 		
 		^referenceCluster.items.collect{ |item,i| this.oclass.perform(*([selector]++argArray[i]))};
 	
@@ -217,11 +184,10 @@ ClusterBasic {
 		if(args.isNil){
 			^this.prCollectSimple(selector,referenceCluster)
 		}{	
-			^this.prCollectArray(selector,this.expandArray(args,referenceCluster),referenceCluster)
+			^this.prCollectWithArgs(selector,this.expandArray(args,referenceCluster),referenceCluster)
 		}
 	
-	}
-	
+	}	
 
 	*doesNotUnderstand{ arg selector...args;
 		var cluster;
