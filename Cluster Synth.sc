@@ -18,46 +18,26 @@ ClusterArg : ClusterBasic{
 }
  
 ClusterServer : ClusterBasic{
-
 	*oclass{ ^ Server }
-
-	
-	asClusterGroup{
-		^ClusterGroup.fromArray(this.prCollect(\asGroup).items)
-	
-	}
-	
-	asClusterServer{
-		^this
-	}
 
 	addToSyncCenter{
 		items.do(SyncCenter.add(_))
 	}
 	
+	//need to implement this in ClusterBasic
 	*default{
 		^ClusterServer([Server.default])
 	}		
-
 }
-	
 
 ClusterGroup : ClusterBasic{ 
-
-	var clusterGroup;
-	
 	*oclass{ ^Group }
 	
 	*new { arg target, addAction=\addToHead;	
-		^this.doesNotUnderstand(\new,target, addAction).init(target)
-	}
+		^this.doesNotUnderstand(\new,target, addAction)	}
 	
 	*basicNew { arg server, nodeID;
-		^this.doesNotUnderstand(\basicNew,server, nodeID).init(server)	}
-	
-	init{ |target|
-		clusterGroup = target;
-	}
+		^this.doesNotUnderstand(\basicNew,server, nodeID)	}	
 	
 	newMsg { arg clustertarget, addAction = \addToHead;	
 		^this.doesNotUnderstand(\newMsg,clustertarget, addAction);
@@ -65,53 +45,40 @@ ClusterGroup : ClusterBasic{
 	
 	free { arg sendFlag=true;
 		this.doesNotUnderstand(\free,sendFlag)
-	}
-	
-	clusterServer{		
-		^ClusterServer(items.collect{ |group| group.server })
-	}
-	
-	asClusterGroup{ ^this }		
-
+	}	
 }
 
-ClusterRootNode : ClusterBasic{
-	
+ClusterPGroup : ClusterGroup{ 
+	*oclass{ ^PGroup }
+}
+
+ClusterRootNode : ClusterBasic{	
 	*oclass{ ^RootNode }
 
 	*new{ |clusterServer|
 		^this.doesNotUnderstand(\new,clusterServer)
 	}
-
 }
 
-ClusterBus : ClusterBasic{
-
-	var <clusterServer, <numChannels;
-	
+ClusterBus : ClusterBasic{	
 	*oclass{ ^ Bus }
 	
 	//explicitly implemented because of default number of channels
 	*control { arg clusterServer,numChannels=1;		
-		^super.control(clusterServer,numChannels).init(clusterServer,numChannels);
+		^super.control(clusterServer,numChannels);
 	}
 		
 	*audio { arg clusterServer,numChannels=1;		
-		^super.audio(clusterServer,numChannels).init(clusterServer,numChannels);
-	}
-	
-	init{ |aclusterServer,anumChannels|
-		clusterServer = aclusterServer;
-		numChannels = anumChannels
+		^super.audio(clusterServer,numChannels);
 	}
 	
 	free{
 		this.doesNotUnderstand(\free)
 	}
-
 }
 
 ClusterBuffer : ClusterBasic{
+	*oclass{ ^ Buffer }
 
 	*new { arg server, numFrames, numChannels, bufnum;
 		server = server ? ClusterServer([Server.default]);
@@ -154,17 +121,11 @@ ClusterBuffer : ClusterBasic{
 	
 	numChannels{
 		this.doesNotUnderstand(\numChannels)
-	}	
-	
-	//for the methods not here, the user needs to provide the defaults himself
-	
-	*oclass{ ^ Buffer }
-
+	}
 }
 
 
 ClusterOSCBundle : ClusterBasic{
-
 	*oclass{ ^ OSCBundle }
 		
 	*new{ |clusterServer|
@@ -183,13 +144,10 @@ ClusterOSCBundle : ClusterBasic{
 			("Bundle "++i++":");
 			bundle.messages.dopost;
 		}
-	}
-
-	
+	}	
 }
 
 ClusterSynth : ClusterBasic{
-
 	*oclass{ ^ Synth }
 	
 	*new { arg defName, args, target, addAction=\addToHead;
@@ -256,24 +214,19 @@ ClusterSynth : ClusterBasic{
 			ClusterServer(synths.collect(_.server))
 		)
 	}
-
-
 }
 
 ClusterSynthDef : ClusterBasic{
-
 	*oclass{ ^ SynthDef }
 		
 	*new { arg name, ugenGraphFuncs, rates, prependArgs, variants, clusterdata;
 
 		^this.doesNotUnderstand(\new,name, ugenGraphFuncs, rates, prependArgs, variants, clusterdata)
 	}	
-	
 }
 
 
 ClusterMonitor : ClusterBasic{
-
 	*oclass{ ^ Monitor }
 	
 	*new{ |clusterServer|
@@ -301,7 +254,6 @@ ClusterMonitor : ClusterBasic{
 	newGroupToBundle { arg bundle, target, addAction=(\addToTail);
 		this.doesNotUnderstand(\newGroupToBundle,bundle, target, addAction)
 	}
-
 }
 
 
