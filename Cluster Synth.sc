@@ -48,8 +48,8 @@ ClusterGroup : ClusterBasic{
 	}	
 }
 
-ClusterPGroup : ClusterGroup{ 
-	*oclass{ ^PGroup }
+ClusterParGroup : ClusterGroup{ 
+	*oclass{ ^ParGroup }
 }
 
 ClusterRootNode : ClusterBasic{	
@@ -157,7 +157,12 @@ ClusterSynth : ClusterBasic{
 			^this.doesNotUnderstand(\new,defName, args, target, addAction)
 		}			
 	}
-
+	
+	//in case one needs to do an unsynced play and has SyncCenter installed.
+	*unsyncedNew{ arg defName, args, target, addAction=\addToHead;
+		^this.doesNotUnderstand(\new,defName, args, target, addAction);
+	}
+	
 	syncedPlay{ |target,args,addAction|		
 		var bundle;
 		if(SyncCenter.ready){
