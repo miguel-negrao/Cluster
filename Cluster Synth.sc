@@ -1,22 +1,27 @@
-// ©2009 Miguel Negrão
-// GPLv2 -http://www.gnu.org/licenses/old-licenses/gpl-2.0.html.
-// library to use a synth or family of related synths playing simetrically in multiple servers/computers.
-// usefull for multicomputer spatialization systems.
+/*
+    Cluster Library
+    Copyright 2009-2012 Miguel Negr√£o.
+
+    Cluster Library: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+   Cluster Library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cluster Library.  If not, see <http://www.gnu.org/licenses/>.
+
+	library to use a synth or family of related synths playing simetrically in multiple servers/computers.
+    usefull for multicomputer spatialization systems.
+*/
+
 
 //when returning values the classes give out a ClusterArg, which is then recognized by the other classes as a valid argument to expand. 
 
-ClusterArg : ClusterBasic{
-
-	oclass{ ^ClusterArg }
-	
-	doesNotUnderstand{ arg selector...args; 
-		("ClusterArg is dumb, it doesn't understand "++selector) 
-		^this.prExpandCollect(selector,args)
-		
-	}	
-
-}
- 
 ClusterServer : ClusterBasic{
 	*oclass{ ^ Server }
 
@@ -248,7 +253,7 @@ ClusterMonitor : ClusterBasic{
 		^this.doesNotUnderstand(\playNToBundle,bundle, argOuts, argAmps, argIns, argVol, argFadeTime, inGroup, addAction, defName)		
 	}
 	
-	playToBundle{ |bundle, fromIndex, fromNumChannels=2, toIndex, toNumChannels, inGroup, multi = false, volume, inFadeTime, addAction|
+	playToBundle{ |bundle, fromIndex, fromNumChannels=2, toIndex, toNumChannels, inGroup, multi = false, volume, inFadeTime, addAction|
 		this.doesNotUnderstand(\playToBundle,bundle, fromIndex, fromNumChannels, toIndex, toNumChannels, inGroup, multi, volume, inFadeTime, addAction)
 	}
 	
