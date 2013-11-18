@@ -82,11 +82,13 @@ ClusterBasic {
 	// will work, but it's not possible to pass arguments by name. e.g. busnum: 3
 
 	doesNotUnderstand{ arg selector...args;
-		//IO("does not understand- base class "++this.class++" selector "++selector).postln;
+		//("ClusterBasic:doesNotUnderstand | base class "++this.class++" | selector "++selector).postln;
 		if(this.respondsTo(selector)){
 			^this.prExpandCollect(selector,args)
 		}{
 			//if method not implemented than call Object's doesNotUnderstand
+			//"items: %".format(items).postln;
+			//"class % doesn't implement selector %".format(items[0].class, selector).postln;
 			^super.doesNotUnderstand(*([selector]++args));
 		}
 	}
@@ -222,7 +224,7 @@ ClusterBasic {
 
 	*doesNotUnderstand{ arg selector...args;
 		var cluster;
-		("doesNotUnderstand - "++selector++" this class: "++this.class++" args is "++args);
+		//("doesNotUnderstand - "++selector++" this class: "++this.class++" args is "++args).postln;
 		if(this.oclass.class.findRespondingMethodFor(selector).notNil){
 			^super.newCopyArgs(this.prExpandCollect(selector,args))
 		}
